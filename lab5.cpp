@@ -33,76 +33,75 @@ Nodo::~Nodo()
 {
 }
 
-typedef Nodo* nodoptr;
+typedef class Nodo* nodoptr;
 
 class linkedList
 {
-private:
-    int size;    
+private:       
     Nodo *head;
+    
 public:    
     linkedList();
     void insertar(int valor);
     void remove(int eliminar);
     void print();
+    void find(int valor);
     ~linkedList();
 };
 
 linkedList::linkedList( ){ 
-    this->size = 0;   
+       
     this->head = nullptr;
 }
 
-void linkedList :: insertar(int valor){
+void linkedList :: insertar(int valor){   
+    
+    nodoptr new1;
+    nodoptr aux;
+    nodoptr aux2;
+    
+    new1 = (Nodo*)malloc(sizeof(Nodo));
    
-    if (head == nullptr) // case 1
+    if(new1 == NULL) 
     {
-        head = new Nodo;
-        head->element = valor;
-        head->next = nullptr;
-    }else
+        cout << "Erro en la memoria" << endl;
+        return;
+    }   
+
+    new1->element = valor;
+    new1->next = NULL;
+    
+    if (head == NULL) // case 1
+    {       
+        head = new1;
+    } 
+    
+    else if(valor < head->element) // case 2
     {
-        nodoptr p = head;
-        if (valor < p->element) // case 2
-        {
-            p = new Nodo(valor);
-            p->next = head;
-            head = p;
-        }
-        while (p->next != nullptr)
-        {
-            if (valor > p->next->element) // case 3
+        new1 -> next = head;
+        head = new1;
+    } 
+    else 
+    {   
+        aux2 = head;
+        aux = head -> next;
+            
+            while(aux != NULL && valor > aux -> element) // search
             {
-                p = p->next;
-            }else
-            {
-                nodoptr aux;
-                aux->element = valor;
-                aux->next = p->next;
-                p->next = aux;
-                return;
+                aux2 = aux;
+                aux = aux->next;
             }
-        }
-        if (valor > p->element)
-        {
-            if (head != nullptr)
-            {
-                p = new Nodo(valor);
-                nodoptr it = head;
-                while (it->next != nullptr)
-                {
-                    it = it->next;
-                }
-                it->next = p; 
-            }else
-            {
-                p = new Nodo(valor);
-                p->next = head;
-                head = p;
-            } 
-        }
+            
+           if(aux == NULL) 
+           {
+                aux2 -> next = new1;
+           } 
+           else 
+           {
+                new1 -> next = aux;
+                aux2 -> next = new1;
+           }
     }
-    size++;
 }
 
 void linkedList :: remove(int eliminar){
@@ -120,15 +119,14 @@ void linkedList :: remove(int eliminar){
     }
     nodoptr aux = head;
     while (aux->next != nullptr && aux->next->element != eliminar) // case3
-    {
-        aux = aux->next;
-        if (aux->next->element == eliminar)
-        {
-            nodoptr aux2 = aux->next;
-            aux->next = aux2->next;
-            delete aux2;
-        }  
-    }    
+    
+    aux = aux->next;
+    if (aux->next == nullptr)    {
+        return;
+    }  
+    nodoptr aux2 = aux->next;
+    aux->next = aux2->next;
+    delete aux2;    
     
 }
 
@@ -138,6 +136,20 @@ void linkedList ::print(){
         cout << i->element << " ";
     }
     cout << endl;
+}
+
+void linkedList::find(int valor){
+    
+    nodoptr aux = head;
+    while (aux != nullptr && aux->element != valor)
+    {       
+        aux = aux->next;
+    }
+    if(aux != nullptr){
+      cout << "YES" << endl;
+    }else{
+      cout << "NO" << endl;
+    }
 }
 
 linkedList::~linkedList()
@@ -160,16 +172,27 @@ int main(){
     }
     
     lista.print();
-    for (int i = 0; i < 10; i++)
-    {
-        if (i % 5 == 0)
-        {
-            lista.remove(i);
-        }
-        
+  
+    for(int i=1; i<10; i+=2){
+      lista.insertar(i);
     }
     
     lista.print();
 
+    for(int i=1; i<13; i++){
+      if(i % 3 == 0){
+        lista.remove(i);
+      }
+    }
+    
+    cout << endl;
+
+    lista.print();
+
+    lista.find(16);
+    lista.find(3);
+    
+    cout << endl;
+    
     return 0;
 }
