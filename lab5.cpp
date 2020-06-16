@@ -38,7 +38,7 @@ typedef class Nodo* nodoptr;
 class linkedList
 {
 private:       
-    Nodo *head;
+    nodoptr head;
     
 public:    
     linkedList();
@@ -74,13 +74,8 @@ void linkedList :: insertar(int valor){
     if (head == NULL) // case 1
     {       
         head = new1;
-    } 
+    }    
     
-    else if(valor < head->element) // case 2
-    {
-        new1 -> next = head;
-        head = new1;
-    } 
     else 
     {   
         aux2 = head;
